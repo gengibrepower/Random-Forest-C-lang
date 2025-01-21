@@ -74,7 +74,6 @@ void find_best_split(DataPoint *data, int num_samples, int num_features, int *be
                     right_size++;
                 }
             }
-
             // Divida os dados em dois grupos (esquerdo e direito)
             DataPoint *left_data = malloc(left_size * sizeof(DataPoint));
             DataPoint *right_data = malloc(right_size * sizeof(DataPoint));

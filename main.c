@@ -3,7 +3,7 @@
 #include <time.h>
 #include "data_loader.h"
 
-//Felipe Gegembauer
+// Felipe Gegembauer
 
 // Função para embaralhar os dados
 void shuffle_data(DataPoint *data, int num_samples) {
@@ -15,6 +15,31 @@ void shuffle_data(DataPoint *data, int num_samples) {
     }
 }
 
+// Função para calcular e exibir a matriz de confusão e as métricas
+void calculate_metrics(int confusion_matrix[2][2], int test_size) {
+    int true_positive = confusion_matrix[1][1];
+    int false_positive = confusion_matrix[0][1];
+    int false_negative = confusion_matrix[1][0];
+    int true_negative = confusion_matrix[0][0];
+
+    double precision = (true_positive + false_positive > 0) ? 
+                       (double)true_positive / (true_positive + false_positive) : 0.0;
+    double recall = (true_positive + false_negative > 0) ? 
+                    (double)true_positive / (true_positive + false_negative) : 0.0;
+    double f1_score = (precision + recall > 0) ? 
+                      (2 * precision * recall) / (precision + recall) : 0.0;
+
+    printf("Matriz de Confusao:\n");
+    printf("              Predicao\n");
+    printf("               P   N\n");
+    printf("          P | %d | %d |\n", true_negative, false_positive);
+    printf("Real      N | %d | %d |\n", false_negative, true_positive);
+    
+    printf("Precisao: %.2f%%\n", precision * 100.0);
+    printf("Recall: %.2f%%\n", recall * 100.0);
+    printf("F1 Score: %.2f\n", f1_score);
+}
+
 int main() {
     int num_samples, num_features;
     DataPoint *data = load_csv("breast-cancer.csv", &num_samples, &num_features);
@@ -22,7 +47,7 @@ int main() {
     if (data) {
         printf("Numero de amostras: %d\n", num_samples);
         printf("Numero de caracteristicas: %d\n", num_features);
-
+        
         // Embaralhar os dados
         srand(time(NULL)); // Inicializa o gerador de números aleatórios
         shuffle_data(data, num_samples);
@@ -48,8 +73,12 @@ int main() {
 
         // Fazer previsões no conjunto de teste
         int correct_predictions = 0;
+        int confusion_matrix[2][2] = {0}; // Matriz de confusão para 2 classes
+
         for (int i = 0; i < test_size; i++) {
             int prediction = predict_forest(forest, &test_data[i]);
+            confusion_matrix[test_data[i].label][prediction]++; // Atualiza a matriz de confusão
+
             if (prediction == test_data[i].label) {
                 correct_predictions++;
             }
@@ -57,7 +86,10 @@ int main() {
 
         // Calcular e exibir a precisão
         double accuracy = (double)correct_predictions / test_size * 100.0;
-        printf("Accuracy: %.2f%%\n", accuracy);
+        printf("Accuracy : %.2f%%\n", accuracy);
+
+        // Calcular e exibir as métricas
+        calculate_metrics(confusion_matrix, test_size);
 
         // Liberar memória
         free_forest(forest);
