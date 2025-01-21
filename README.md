@@ -1,0 +1,94 @@
+# Random Forest Implementation for Breast Cancer Classification
+
+This project implements a Random Forest algorithm in C for binary classification using a CSV dataset. The dataset used is the `breast-cancer.csv`, which contains information for determining whether a breast cancer diagnosis is positive or negative.
+
+## Features
+
+- **Efficient Random Forest implementation** for binary classification.
+- Supports **CSV data parsing**.
+- Handles a dataset with multiple input variables and 1 target output.
+- Outputs **classification results** for each instance in the dataset.
+- Achieves an average accuracy of **96%**.
+
+## Prerequisites
+
+To compile and run this project, ensure you have the following:
+
+1. **C Compiler**: GCC or any compatible compiler.
+2. **Make** (optional): To simplify the build process.
+3. The following libraries (if applicable):
+   - `stdlib.h`
+   - `stdio.h`
+   - `string.h`
+   - `time.h`
+
+## Dataset Format
+
+The input dataset should be in CSV format with the following structure:
+
+Header:
+```csv
+id,diagnosis,radius_mean,texture_mean,perimeter_mean,area_mean,smoothness_mean,compactness_mean,concavity_mean,concave points_mean,symmetry_mean,fractal_dimension_mean,radius_se,texture_se,perimeter_se,area_se,smoothness_se,compactness_se,concavity_se,concave points_se,symmetry_se,fractal_dimension_se,radius_worst,texture_worst,perimeter_worst,area_worst,smoothness_worst,compactness_worst,concavity_worst,concave points_worst,symmetry_worst,fractal_dimension_worst
+```
+
+- **Input variables**: All columns except `id` and `diagnosis`.
+- **Target variable**: The `diagnosis` column, where 1 represents a positive diagnosis, and 0 represents a negative diagnosis.
+
+Example:
+```csv
+id,diagnosis,radius_mean,texture_mean,perimeter_mean,area_mean,smoothness_mean,compactness_mean,concavity_mean,concave points_mean,symmetry_mean,fractal_dimension_mean
+1,1,17.99,10.38,122.8,1001.0,0.1184,0.2776,0.3001,0.1471,0.2419,0.07871
+2,0,20.57,17.77,132.9,1326.0,0.08474,0.07864,0.0869,0.07017,0.1812,0.05667
+```
+
+## File Structure
+
+- `main.c`: Entry point of the program.
+- `treinador.c`: Contains Random Forest training and evaluation implementation.
+- `data_loader.c`: Handles reading and parsing CSV files.
+- `data_loader.h`: Header file for the project.
+
+## Build and Run
+
+### Using GCC
+
+1. Compile the program using the following command:
+   ```bash
+   gcc main.c treinador.c data_loader.c -o programa
+   ```
+
+2. Run the program:
+   ```bash
+   ./programa
+   ```
+
+## Configuration
+
+The program expects the input CSV file to be named `breast-cancer.csv` and placed in the same directory as the executable. If the file name or location differs, update the file path in the code.
+
+## Output
+
+For now the program outputs:
+- **Number of samples** in the dataset.
+- **Number of features** in the dataset.
+- **Accuracy** of the Random Forest model.
+
+Example output:
+```plaintext
+Numero de amostras: 569
+Numero de caracteristicas: 31
+Acuracy: 95.61%
+```
+
+## Limitations
+
+- The dataset must not contain missing or malformed data.
+- CSV parsing assumes a standard format with consistent delimiters (`,`).
+
+## License
+
+This project is licensed under the MIT License. See the LICENSE file for details.
+
+## Author
+
+Felipe Gegembauer
