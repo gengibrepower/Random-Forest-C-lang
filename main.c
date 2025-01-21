@@ -3,6 +3,8 @@
 #include <time.h>
 #include "data_loader.h"
 
+//Felipe Gegembauer
+
 // Função para embaralhar os dados
 void shuffle_data(DataPoint *data, int num_samples) {
     for (int i = num_samples - 1; i > 0; i--) {

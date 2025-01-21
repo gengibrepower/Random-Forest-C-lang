@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include "data_loader.h"
 
+//Felipe Gegembauer
+
 // Função para calcular o Gini Impurity de um conjunto de dados
 double calculate_gini_impurity(DataPoint *data, int num_samples) {
     int count_0 = 0, count_1 = 0;

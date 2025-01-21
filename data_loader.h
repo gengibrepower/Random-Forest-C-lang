@@ -1,6 +1,8 @@
 #ifndef DATA_LOADER_H
 #define DATA_LOADER_H
 
+//Felipe Gegembauer
+
 // Estrutura para um ponto de dados
 typedef struct {
     double *features; // Array com as características

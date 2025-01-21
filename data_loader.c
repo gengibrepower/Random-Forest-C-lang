@@ -3,6 +3,8 @@
 #include <string.h>
 #include "data_loader.h"
 
+//Felipe Gegembauer
+
 //Funcao para carregar o csv
 DataPoint *load_csv(const char *filename, int *num_samples, int *num_features) {
     FILE *arquivo = fopen(filename, "r"); //abre a bomba do arquivo como "arquivo"
