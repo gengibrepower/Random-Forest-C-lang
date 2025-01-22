@@ -23,13 +23,13 @@ void calculate_metrics(int confusion_matrix[2][2], int test_size) {
     int true_negative = confusion_matrix[0][0];
 
     // Cálculo do erro de previsão
-    double error = (double)(false_positive + false_negative) / test_size;
+    double predictionerror = (double)(false_positive + false_negative) / test_size;
 
     // Cálculo da acurácia
     double accuracy = (double)(true_positive + true_negative) / test_size;
 
     // Cálculo da precisão
-    double precision = (true_positive + false_positive > 0) ? 
+    double precision = (true_positive + false_positive > 0) ?                               //toda vez que aparecer o '?' vai ser um if mais reduzido
                        (double)true_positive / (true_positive + false_positive) : 0.0;
 
     // Cálculo do recall
@@ -43,11 +43,14 @@ void calculate_metrics(int confusion_matrix[2][2], int test_size) {
     printf("Matriz de Confusao:\n");
     printf("              Predicao\n");
     printf("               P   N\n");
+    printf("          P | TP | FN |\n");
+    printf("Real      N | FP | TN |\n");
+    printf("              Predicao\n");
+    printf("               P   N\n");
     printf("          P | %d | %d |\n", true_negative, false_positive);
     printf("Real      N | %d | %d |\n", false_negative, true_positive);
-    
-    printf("Erro de Previsao: %.2f%%\n", error * 100.0);
-    printf("Acuracia: %.2f%%\n", accuracy * 100.0);
+    printf("Erro de Previsao: %.2f%%\n", predictionerror * 100.0);
+    printf("Accuracy: %.2f%%\n",accuracy * 100);
     printf("Precisao: %.2f%%\n", precision * 100.0);
     printf("Recall: %.2f%%\n", recall * 100.0);
     printf("F1 Score: %.2f\n", f1_score);
