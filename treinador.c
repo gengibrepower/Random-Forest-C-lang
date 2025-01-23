@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include "data_loader.h"
 
 //Felipe Gegembauer
 
-// Função para calcular o Gini Impurity de um conjunto de dados
+// Função para calcular o Gini Impurity de um conjunto de dados(opção 1)
 double calculate_gini_impurity(DataPoint *data, int num_samples) {
     int count_0 = 0, count_1 = 0;
     for (int i = 0; i < num_samples; i++) {
@@ -18,6 +19,30 @@ double calculate_gini_impurity(DataPoint *data, int num_samples) {
     double p_1 = (double)count_1 / num_samples;
     return 1.0 - (p_0 * p_0 + p_1 * p_1); // Fórmula do Gini Impurity
 }
+
+//Função para caucular a entropia de um conunto de dados(opção 2)
+double calculate_entropy(DataPoint *data, int num_samples) {
+    int count_0 = 0, count_1 = 0;
+    for (int i = 0; i < num_samples; i++) {
+        if (data[i].label == 0) {
+            count_0++;
+        } else {
+            count_1++;
+        }
+    }
+    double p_0 = (double)count_0 / num_samples;
+    double p_1 = (double)count_1 / num_samples;
+
+    double entropy = 0.0;
+    if (p_0 > 0) {
+        entropy -= p_0 * log2(p_0);
+    }
+    if (p_1 > 0) {
+        entropy -= p_1 * log2(p_1);
+    }
+    return entropy;
+}
+
 
 int compare_feature(const void *a, const void *b) {
     DataPoint *data_a = (DataPoint *)a;
@@ -52,6 +77,7 @@ DataPoint* filter_right_data(DataPoint *data, int num_samples, int best_feature,
     return right_data;
 }
 
+//usa gini
 void find_best_split(DataPoint *data, int num_samples, int num_features, int *best_feature, double *best_threshold) {
     double best_gini = 1.0; // Melhor Gini inicialmente o pior valor possível
     *best_feature = -1;
@@ -108,6 +134,64 @@ void find_best_split(DataPoint *data, int num_samples, int num_features, int *be
     }
 }
 
+
+//usa entropia
+void find_best_split_entropy(DataPoint *data, int num_samples, int num_features, int *best_feature, double *best_threshold) {
+    double best_entropy = INFINITY; // Melhor entropia inicialmente o pior valor possível
+    *best_feature = -1;
+    *best_threshold = 0.0;
+
+    for (int feature = 0; feature < num_features; feature++) {
+        // Ordena os dados pela característica 'feature'
+        qsort(data, num_samples, sizeof(DataPoint), compare_feature);  // Ordena os dados pela característica
+
+        for (int i = 0; i < num_samples - 1; i++) {
+            // Pega o valor médio entre dois pontos consecutivos como o threshold
+            double threshold = (data[i].features[feature] + data[i + 1].features[feature]) / 2.0;
+
+            // Contagem de elementos para os grupos esquerdo e direito
+            int left_size = 0, right_size = 0;
+            for (int j = 0; j < num_samples; j++) {
+                if (data[j].features[feature] <= threshold) {
+                    left_size++;
+                } else {
+                    right_size++;
+                }
+            }
+            // Divida os dados em dois grupos (esquerdo e direito)
+            DataPoint *left_data = malloc(left_size * sizeof(DataPoint));
+            DataPoint *right_data = malloc(right_size * sizeof(DataPoint));
+
+            int left_index = 0, right_index = 0;
+            for (int j = 0; j < num_samples; j++) {
+                if (data[j].features[feature] <= threshold) {
+                    left_data[left_index++] = data[j];
+                } else {
+                    right_data[right_index++] = data[j];
+                }
+            }
+
+            // Calcular a entropia para os dois grupos
+            double entropy_left = calculate_entropy(left_data, left_size);
+            double entropy_right = calculate_entropy(right_data, right_size);
+
+            // Calcula a entropia ponderada
+            double entropy = (left_size / (double)num_samples) * entropy_left + (right_size / (double)num_samples) * entropy_right;
+
+            // Atualiza o melhor threshold e feature se a entropia for menor
+            if (entropy < best_entropy) {
+                best_entropy = entropy;
+                *best_feature = feature;
+                *best_threshold = threshold;
+            }
+
+            // Libera memória dos dados divididos
+            free(left_data);
+            free(right_data);
+        }
+    }
+}
+
 //Função para treinar arvore de decisão
 TreeNode* train_tree(DataPoint *data, int num_samples, int num_features, int max_depth) {
     // Caso base: Se a profundidade máxima for atingida ou todos os dados são do mesmo rótulo
@@ -120,7 +204,7 @@ TreeNode* train_tree(DataPoint *data, int num_samples, int num_features, int max
 
     int best_feature;
     double best_threshold;
-    find_best_split(data, num_samples, num_features, &best_feature, &best_threshold);
+    find_best_split_entropy(data, num_samples, num_features, &best_feature, &best_threshold);
 
     TreeNode *node = create_node(best_feature, best_threshold, 0); // Não é folha
     int left_size, right_size;
