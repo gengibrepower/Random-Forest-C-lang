@@ -106,10 +106,6 @@ int main() {
             }
         }
 
-        // Calcular e exibir a precisão
-        double accuracy = (double)correct_predictions / test_size * 100.0;
-        printf("Accuracy : %.2f%%\n", accuracy);
-
         // Calcular e exibir as métricas
         calculate_metrics(confusion_matrix, test_size);
 
