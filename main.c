@@ -7,8 +7,14 @@
 
 // Função para embaralhar os dados
 void shuffle_data(DataPoint *data, int num_samples) {
+    // Inicializa a semente do gerador de números aleatórios
+    srand((unsigned int)time(NULL)); // Inicializa a semente uma vez
+    
     for (int i = num_samples - 1; i > 0; i--) {
+        // Gera um índice aleatório usando rand()
         int j = rand() % (i + 1);
+        
+        // Troca os elementos
         DataPoint temp = data[i];
         data[i] = data[j];
         data[j] = temp;
@@ -83,8 +89,8 @@ int main() {
         }
 
         // Treinar a floresta aleatória
-        int num_trees = 100; // Defina o número de árvores
-        int max_depth = 10;  // Defina a profundidade máxima
+        int num_trees = 1000; // Defina o número de árvores
+        int max_depth = 100;  // Defina a profundidade máxima
         RandomForest *forest = train_forest(train_data, train_size, num_features, num_trees, max_depth);
 
         // Fazer previsões no conjunto de teste
