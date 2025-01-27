@@ -51,7 +51,7 @@ void calculate_metrics(int confusion_matrix[2][2], int test_size) {
     printf("              Predicao\n");
     printf("               P   N\n");
     printf("          P | TP | FN |\n");
-    printf("Real      N | FP | TN |\n");
+    printf(" Real     N | FP | TN |\n");
     printf("              Predicao\n");
     printf("               P   N\n");
     printf("          P | %d | %d |\n", true_negative, false_positive);
