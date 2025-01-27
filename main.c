@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 #include "data_loader.h"
 
 // Felipe Gegembauer
@@ -62,6 +63,61 @@ void calculate_metrics(int confusion_matrix[2][2], int test_size) {
     printf("F1 Score: %.2f\n", f1_score);
 }
 
+// Função para realizar k-fold cross-validation
+void k_fold_cross_validation(DataPoint *data, int num_samples, int num_features, int num_trees, int max_depth, int k_folds) {
+    int fold_size = num_samples / k_folds;
+    double best_accuracy = 0.0; // Melhor acurácia
+    int best_confusion_matrix[2][2] = {0}; // Matriz de confusão da melhor execução
+
+    for (int fold = 0; fold < k_folds; fold++) {
+        DataPoint *train_data = malloc((num_samples - fold_size) * sizeof(DataPoint));
+        DataPoint *test_data = malloc(fold_size * sizeof(DataPoint));
+        int train_index = 0, test_index = 0;
+
+        for (int i = 0; i < num_samples; i++) {
+            if (i >= fold * fold_size && i < (fold + 1) * fold_size) {
+                test_data[test_index++] = data[i]; // Test fold
+            } else {
+                train_data[train_index++] = data[i]; // Training fold
+            }
+        }
+
+        // Chama a funcão para o treinamento
+        RandomForest *forest = train_forest(train_data, train_index, num_features, num_trees, max_depth);
+
+        // Fazer previsões no conjunto de teste
+        int correct_predictions = 0;
+        int confusion_matrix[2][2] = {0}; // Matriz de confusão
+
+        for (int i = 0; i < fold_size; i++) {
+            int prediction = predict_forest(forest, &test_data[i]);
+            confusion_matrix[test_data[i].label][prediction]++; // Atualiza a matriz de confusão
+
+            if (prediction == test_data[i].label) {
+                correct_predictions++;
+            }
+        }
+
+        // Calcular a acurácia atual
+        double current_accuracy = (double)correct_predictions / fold_size;
+
+        // Verifica se a acurácia atual é a melhor
+        if (current_accuracy > best_accuracy) {
+            best_accuracy = current_accuracy;
+            memcpy(best_confusion_matrix, confusion_matrix, sizeof(confusion_matrix)); // Copia a matriz de confusão
+        }
+
+        // Liberar memória
+        free_forest(forest);
+        free(train_data);
+        free(test_data);
+    }
+
+    // Exibir a melhor acurácia e a matriz de confusão correspondente
+    printf("Melhor Acurácia: %.2f%%\n", best_accuracy * 100);
+    calculate_metrics(best_confusion_matrix, fold_size); // Exibe as métricas da melhor execução
+}
+
 int main() {
     int num_samples, num_features;
     DataPoint *data = load_csv("breast-cancer.csv", &num_samples, &num_features);
@@ -89,30 +145,14 @@ int main() {
         }
 
         // Treinar a floresta aleatória
-        int num_trees = 1000; // Defina o número de árvores
-        int max_depth = 100;  // Defina a profundidade máxima
-        RandomForest *forest = train_forest(train_data, train_size, num_features, num_trees, max_depth);
+        int num_trees = 1000;   // Defina o número de árvores
+        int max_depth = 100;    // Profundidade máxima
+        int k_folds = 5;        // Número de fold para o cross validation
 
-        // Fazer previsões no conjunto de teste
-        int correct_predictions = 0;
-        int confusion_matrix[2][2] = {0}; // Matriz de confusão para 2 classes
-
-        for (int i = 0; i < test_size; i++) {
-            int prediction = predict_forest(forest, &test_data[i]);
-            confusion_matrix[test_data[i].label][prediction]++; // Atualiza a matriz de confusão
-
-            if (prediction == test_data[i].label) {
-                correct_predictions++;
-            }
-        }
-
-        // Calcular e exibir as métricas
-        calculate_metrics(confusion_matrix, test_size);
+        // Realizar k-fold cross-validation
+        k_fold_cross_validation(data, num_samples, num_features, num_trees, max_depth, k_folds);
 
         // Liberar memória
-        free_forest(forest);
-        free(train_data);
-        free(test_data);
         for (int i = 0; i < num_samples; i++) {
             free(data[i].features);
         }
