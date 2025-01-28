@@ -6,6 +6,25 @@
 
 // Felipe Gegembauer
 
+
+//barra de progresso por pura estética
+void print_progress_bar(int progress) {
+    int bar_width = 50; // Largura da barra de progresso
+    float ratio = (float)progress;
+    int pos = bar_width * ratio;
+
+    printf("[");
+    for (int i = 0; i < bar_width; i++) {
+        if (i < pos) {
+            printf("=");
+        } else {
+            printf(" ");
+        }
+    }
+    printf("] %.2f%%\r", ratio * 100); // \r para retornar ao início da linha
+    fflush(stdout); // Força a saída a ser exibida imediatamente
+}
+
 // Função para embaralhar os dados
 void shuffle_data(DataPoint *data, int num_samples) {
     // Inicializa a semente do gerador de números aleatórios
@@ -107,6 +126,8 @@ void k_fold_cross_validation(DataPoint *data, int num_samples, int num_features,
             memcpy(best_confusion_matrix, confusion_matrix, sizeof(confusion_matrix)); // Copia a matriz de confusão
         }
 
+        print_progress_bar(0.32 + 0.17*fold); // Atualiza a barra de progresso
+
         // Liberar memória
         free_forest(forest);
         free(train_data);
@@ -116,20 +137,20 @@ void k_fold_cross_validation(DataPoint *data, int num_samples, int num_features,
     // Exibir a melhor acurácia e a matriz de confusão correspondente
     printf("Melhor Acurácia: %.2f%%\n", best_accuracy * 100);
     calculate_metrics(best_confusion_matrix, fold_size); // Exibe as métricas da melhor execução
+    printf("\n");
 }
 
 int main() {
     int num_samples, num_features;
     DataPoint *data = load_csv("breast-cancer.csv", &num_samples, &num_features);
-
+    print_progress_bar(0.0);
     if (data) {
-        printf("Numero de amostras: %d\n", num_samples);
-        printf("Numero de caracteristicas: %d\n", num_features);
-        
+
+        print_progress_bar(0.05);
         // Embaralhar os dados
         srand(time(NULL)); // Inicializa o gerador de números aleatórios
         shuffle_data(data, num_samples);
-
+        print_progress_bar(0.10);
         // Dividir os dados em 80% para treinamento e 20% para teste
         int train_size = (int)(num_samples * 0.8);
         int test_size = num_samples - train_size;
@@ -148,6 +169,8 @@ int main() {
         int num_trees = 1000;   // Defina o número de árvores
         int max_depth = 100;    // Profundidade máxima
         int k_folds = 5;        // Número de fold para o cross validation
+
+        print_progress_bar(0.15);
 
         // Realizar k-fold cross-validation
         k_fold_cross_validation(data, num_samples, num_features, num_trees, max_depth, k_folds);
