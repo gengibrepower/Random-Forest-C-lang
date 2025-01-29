@@ -133,11 +133,10 @@ void k_fold_cross_validation(DataPoint *data, int num_samples, int num_features,
         free(train_data);
         free(test_data);
     }
-
-    // Exibir a melhor acurácia e a matriz de confusão correspondente
-    printf("Melhor Acurácia: %.2f%%\n", best_accuracy * 100);
-    calculate_metrics(best_confusion_matrix, fold_size); // Exibe as métricas da melhor execução
+    print_progress_bar(1.0);
     printf("\n");
+    // Exibir a melhor acurácia e a matriz de confusão correspondente
+    calculate_metrics(best_confusion_matrix, fold_size); // Exibe as métricas da melhor execução
 }
 
 int main() {

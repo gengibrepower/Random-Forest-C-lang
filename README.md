@@ -1,6 +1,6 @@
 # Random Forest Implementation for Breast Cancer Classification
 
-This project implements a Random Forest algorithm in C for binary classification using a CSV dataset. The dataset used is the `breast-cancer.csv`, which contains information for determining whether a breast cancer diagnosis is positive or negative.Dataset in the [link](https://www.kaggle.com/datasets/yasserh/breast-cancer-dataset)
+This project implements a Random Forest algorithm in C for binary classification using a CSV dataset. The dataset used is the `breast-cancer.csv`, which contains information for determining whether a breast cancer diagnosis is positive or negative.Dataset that i used in the [link](https://www.kaggle.com/datasets/yasserh/breast-cancer-dataset)
 
 ## Features
 
@@ -8,7 +8,7 @@ This project implements a Random Forest algorithm in C for binary classification
 - Supports **CSV data parsing**.
 - Handles a dataset with multiple input variables and 1 target output.
 - Outputs **classification results** for each instance in the dataset.
-- Achieves an average accuracy of **96%**.
+- Achieves an average accuracy of **98%**.
 
 ## Prerequisites
 
@@ -86,23 +86,21 @@ The program outputs:
 Example output:
 
 ```plaintext
-Numero de amostras: 569
-Numero de caracteristicas: 31
-Accuracy : 96.49%
+[==================================================] 100.00%
 Matriz de Confusao:
               Predicao
                P   N
           P | TP | FN |
-Real      N | FP | TN |
+ Real     N | FP | TN |
               Predicao
                P   N
-          P | 74 | 1 |
-Real      N | 3 | 36 |
-Erro de Previsao: 3.51%
-Accuracy: 96.49%
-Precisao: 97.30%
-Recall: 92.31%
-F1 Score: 0.95
+          P | 68 | 1 |
+Real      N | 2 | 42 |
+Erro de Previsao: 2.65%
+Accuracy: 97.35%
+Precisao: 97.67%
+Recall: 95.45%
+F1 Score: 0.97
 ```
 
 ## Limitations
