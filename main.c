@@ -8,7 +8,7 @@
 
 
 //barra de progresso por pura estética
-void print_progress_bar(int progress) {
+void print_progress_bar(float progress) {
     int bar_width = 50; // Largura da barra de progresso
     float ratio = (float)progress;
     int pos = bar_width * ratio;
