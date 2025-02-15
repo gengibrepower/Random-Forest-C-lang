@@ -301,3 +301,5 @@ int predict_forest(RandomForest *forest, DataPoint *data) {
 
     return (count_1 > count_0) ? 1 : 0; // Retorna a classe mais comum
 }
+
+asdasdasdfasdasdasddas
