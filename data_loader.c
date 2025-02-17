@@ -73,7 +73,7 @@ TreeNode* create_node(int feature_index, double threshold, int is_leaf) {
     return node;
 }
 
-// Funcão para uma forest
+// Função para alocar uma floresta
 RandomForest* create_forest(int num_trees) {
     RandomForest *forest = (RandomForest *)malloc(sizeof(RandomForest));
     forest->num_trees = num_trees;

@@ -26,9 +26,9 @@ void print_progress_bar(float progress) {
 }
 
 // Função para embaralhar os dados
-void shuffle_data(DataPoint *data, int num_samples) {
+void shuffle_data(DataPoint *data, int num_samples, unsigned int seed) {
     // Inicializa a semente do gerador de números aleatórios
-    srand((unsigned int)time(NULL)); // Inicializa a semente uma vez
+    srand(seed); // Inicializa a semente uma vez
     
     for (int i = num_samples - 1; i > 0; i--) {
         // Gera um índice aleatório usando rand()
@@ -141,14 +141,16 @@ void k_fold_cross_validation(DataPoint *data, int num_samples, int num_features,
 
 int main() {
     int num_samples, num_features;
+    unsigned int seed = 1739470972; // Semente para o gerador de números aleatórios
+    printf("Semente: %u\n", seed);
     DataPoint *data = load_csv("breast-cancer.csv", &num_samples, &num_features);
     print_progress_bar(0.0);
     if (data) {
 
         print_progress_bar(0.05);
         // Embaralhar os dados
-        srand(time(NULL)); // Inicializa o gerador de números aleatórios
-        shuffle_data(data, num_samples);
+        srand(seed); // Inicializa o gerador de números aleatórios
+        shuffle_data(data, num_samples,seed);
         print_progress_bar(0.10);
         // Dividir os dados em 80% para treinamento e 20% para teste
         int train_size = (int)(num_samples * 0.8);
@@ -165,7 +167,7 @@ int main() {
         }
 
         // Treinar a floresta aleatória
-        int num_trees = 1000;   // Defina o número de árvores
+        int num_trees = 2000;   // Defina o número de árvores
         int max_depth = 100;    // Profundidade máxima
         int k_folds = 5;        // Número de fold para o cross validation
 
@@ -182,6 +184,6 @@ int main() {
     } else {
         printf("Falha ao carregar os dados.\n");
     }
-
+    // seed 99.12% = 1739470972
     return 0;
 }
