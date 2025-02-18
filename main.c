@@ -140,8 +140,9 @@ void k_fold_cross_validation(DataPoint *data, int num_samples, int num_features,
 }
 
 int main() {
+    do{
     int num_samples, num_features;
-    unsigned int seed = 1739470972; // Semente para o gerador de números aleatórios
+    unsigned int seed = (unsigned int)time(NULL); // Semente para o gerador de números aleatórios
     printf("Semente: %u\n", seed);
     DataPoint *data = load_csv("breast-cancer.csv", &num_samples, &num_features);
     print_progress_bar(0.0);
@@ -168,7 +169,7 @@ int main() {
 
         // Treinar a floresta aleatória
         int num_trees = 2000;   // Defina o número de árvores
-        int max_depth = 100;    // Profundidade máxima
+        int max_depth = 120;    // Profundidade máxima
         int k_folds = 5;        // Número de fold para o cross validation
 
         print_progress_bar(0.15);
@@ -185,5 +186,6 @@ int main() {
         printf("Falha ao carregar os dados.\n");
     }
     // seed 99.12% = 1739470972
+    }while (1);
     return 0;
 }
